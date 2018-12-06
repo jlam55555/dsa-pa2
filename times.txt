@@ -17,3 +17,10 @@ sort2 (selection, more advanced)
 val1: 0.171188
 diff: -0.1797
 total: 3.152816
+
+sort3 (array)
+val3: 0.092468
+diff: -.75485
+total: 2.567688
+
+best: 2.397938
