@@ -1,0 +1,19 @@
+Ballpark estimates for times of sorts
+
+baseline
+provided_sort (list::sort)
+val1: 0.35091
+val2: 0.98567
+val3: 0.847318
+val4: 1.14864
+total: 3.332538
+
+sort1 (selection)
+val1: 0.225734
+diff: -0.125176
+total: 3.457714
+
+sort2 (selection, more advanced)
+val1: 0.171188
+diff: -0.1797
+total: 3.152816
