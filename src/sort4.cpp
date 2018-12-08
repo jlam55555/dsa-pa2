@@ -191,7 +191,6 @@ void sortDataList(list<Data *> &l, int field) {
       break;
     case 2:
       {
-        
       }
       break;
     case 3:
