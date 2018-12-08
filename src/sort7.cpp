@@ -133,63 +133,6 @@ int main() {
 // class defintions here if you wish.
 
 /*
- * Mergesort algorithm (driver).
- */
-/*void merge(vector<Data *> &a, vector<Data *> &tmpArray, int leftPos, int rightPos, int rightEnd) {
-  int leftEnd = rightPos - 1;
-  int tmpPos = leftPos;
-  int numElements = rightEnd - leftPos + 1;
-  while( leftPos <= leftEnd && rightPos <= rightEnd )
-    if( a[ leftPos ]->val2 <= a[ rightPos ]->val2 )
-      tmpArray[ tmpPos++ ] = std::move( a[ leftPos++ ] );
-    else
-      tmpArray[ tmpPos++ ] = std::move( a[ rightPos++ ] );
-
-  while( leftPos <= leftEnd )
-    tmpArray[ tmpPos++ ] = std::move( a[ leftPos++ ] );
-
-  while( rightPos <= rightEnd )
-    tmpArray[ tmpPos++ ] = std::move( a[ rightPos++ ] );
-
-  for( int i = 0; i < numElements; ++i, --rightEnd )
-    a[ rightEnd ] = std::move( tmpArray[ rightEnd ] );
-}
-void mergeSort(vector<Data *> &a, vector<Data *> &tmpArray, int left, int right) {
-  if(left < right) {
-    int center = (left + right) / 2;
-    mergeSort(a, tmpArray, left, center);
-    mergeSort(a, tmpArray, center + 1, right);
-    merge(a, tmpArray, left, center + 1, right);
-  }
-}*/
-void mergeSort(vector<Data *> &a, vector<Data *> &tmpArray, int left, int right) {
-  if(left < right) {
-    int center = (left + right) / 2;
-    mergeSort(a, tmpArray, left, center);
-    mergeSort(a, tmpArray, center + 1, right);
-
-    int rightPos = center + 1;
-    int leftEnd = rightPos - 1;
-    int tmpPos = left;
-    int numElements = right - left + 1;
-    while( left <= leftEnd && rightPos <= right )
-      if( a[ left ]->val2 <= a[ rightPos ]->val2 )
-        tmpArray[ tmpPos++ ] = move( a[ left++ ] );
-      else
-        tmpArray[ tmpPos++ ] = move( a[ rightPos++ ] );
-
-    while( left <= leftEnd )
-      tmpArray[ tmpPos++ ] = move( a[ left++ ] );
-
-    while( rightPos <= right )
-      tmpArray[ tmpPos++ ] = move( a[ rightPos++ ] );
-
-    for( int i = 0; i < numElements; ++i, --right )
-      a[ right ] = move( tmpArray[ right ] );
-  }
-}
-
-/*
  * Recursive radix sort
  */
 void rrSort(Data *array[], int start, int end, int radix) {
@@ -217,6 +160,74 @@ void rrSort(Data *array[], int start, int end, int radix) {
   }
 }
 
+/*
+ * Recursive radix sort for integers
+ */
+Data *val2Bins[2][550000];
+Data *val2s[1001000];
+// for testing
+#include <bitset>
+void rrSort2(int start, int end, int radix) {
+
+  int bin_counts[] = { 0, 0 };
+  char c;
+  int ind, i, j;
+  unsigned int bitmask = 1U << (31 - radix);
+
+  for(i = start; i < end; i++) {
+    c = (val2s[i]->val2 & bitmask) != 0;
+    val2Bins[c][bin_counts[c]++] = val2s[i];
+  }
+
+  for(i = 0, ind = start; i < 2; i++) {
+    for(j = 0; j < bin_counts[i]; j++, ind++) {
+      val2s[ind] = val2Bins[i][j];
+    }
+  }
+
+  /*for(i = 0, ind = start; i < 2; i++) {
+    
+    cout << "BITMASK " << bitset<32>(bitmask) << endl;
+    cout << "BEGIN SORTED BIN RADIX " << radix << endl;
+    for(int k = 0; k < bin_counts[i]; k++) {
+      cout << "VALUE " << bitset<32>(val2s[ind + k]->val2) << " " << val2s[ind + k]->val2 << endl;
+    }
+    cout << "END SORTED BIN" << endl;
+    ind += bin_counts[i];
+  }
+  cout << endl;*/
+
+  for(i = 0, ind = start; i < 2; i++) {
+    if(radix < 31 && bin_counts[i] > 1) {
+      /*if(bin_counts[i] < 256) {
+        // insertion sort
+        int size = bin_counts[i],
+            max = 0,
+            cur_val,
+            k = ind,
+            end = ind + bin_counts[i];
+        Data *cur;
+        
+        while(k < end) {
+          cur_val = val2s[k]->val2;
+          
+          if(cur_val >= max) {
+            max = cur_val;
+            k++;
+            continue;
+          }
+
+          while(
+        }
+
+      } else {*/
+        rrSort2(ind, ind + bin_counts[i], radix + 1);
+      //}
+    }
+    ind += bin_counts[i];
+  }
+}
+
 void sortDataList(list<Data *> &l, int field) {
   switch(field) {
     case 1:
@@ -231,8 +242,7 @@ void sortDataList(list<Data *> &l, int field) {
         iter = l.begin();
         iter++;
 
-        int change,
-            cur_val,
+        int cur_val,
             max = 0,
             size = l.size() - 1;
 
@@ -258,20 +268,42 @@ void sortDataList(list<Data *> &l, int field) {
       break;
     case 2:
       {
+        /*int width = 2,
+            height = 550000,
+            bin_counts[width],
+            i, j, k;
+        unsigned int c;
+        static Data *chars[2][550000];
+
+        list<Data *>::iterator iter,
+                               end_iter = l.end();
+
+        cout << "testing " << endl;
+        int bitmask = 1U << 31;
+
+        memset(bin_counts, 0, sizeof(int) * width);
+        for(iter = l.begin(); iter != end_iter; iter++) {
+          c = ((*iter)->val2 & bitmask) != 0;
+          //cout << "C " << c << " VAL2 " << (*iter)->val2 << endl;
+          chars[c][bin_counts[c]++] = *iter;
+        }
+        cout << "testing " << endl;
+
+        for(i = 0, iter = l.begin(); i < width; i++) {
+          rrSort2(chars[i], 0, bin_counts[i], 1);
+          
+          for(j = 0; j < bin_counts[i]; j++) {
+            *iter++ = chars[i][j];
+          }
+        }*/
+
+        copy(l.begin(), l.end(), val2s);
 
         int size = l.size();
 
-        vector<Data *> v;
-        v.reserve(size);
-        copy(begin(l), end(l), back_inserter(v));
+        rrSort2(0, size, 0);
 
-        vector<Data *> tmp(size);
-
-        mergeSort(v, tmp, 0, size-1);
-
-        cout << "SIZE " << sizeof(Data *) << endl;
-
-        l.assign(v.begin(), v.end());
+        l.assign(val2s, val2s + size);
       }
       break;
     case 3:
