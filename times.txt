@@ -1,4 +1,7 @@
 Ballpark estimates for times of sorts
+def look into timsort for first one
+radix sort for last one
+??? for second one (merge sort?)
 
 baseline
 provided_sort (list::sort)
@@ -19,8 +22,13 @@ diff: -0.1797
 total: 3.152816
 
 sort3 (array)
-val3: 0.092468
-diff: -.75485
-total: 2.567688
+val3: 0.067162
+diff: -0.780156
+total: 2.552382
 
-best: 2.397938
+sort4 (radix sort)
+val4: 0.385919
+diff: -0.762721
+total: 2.569817
+
+best: 1.609961

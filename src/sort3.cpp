@@ -1,6 +1,5 @@
 /*
- * Lame one using list::sort
- * This is stable! (I thought it wasn't earlier but ok)
+ * Bin sort (single pass radix sort) for 3
  */
 
 
@@ -199,24 +198,28 @@ void sortDataList(list<Data *> &l, int field) {
       break;
     case 3:
       {
-        int width = 94, height = 10620 * 2;
-        static Data *array[94][10620 * 2];
-        int array_ptrs[width];
-        memset(array_ptrs, 0, sizeof(int) * width);
+        int width = 94,
+              height = 10620 * 5/4,
+              char_counts[width],
+              i,
+              j;
         char c;
-        int i, j, offset = 0;
+        static Data *chars[94][10620 * 5/4];
+        memset(char_counts, 0, sizeof(int) * width);
         
         list<Data *>::iterator iter,
                                end_iter = l.end();
 
         for(iter = l.begin(); iter != end_iter; iter++) {
           c = (*iter)->val3 - 33;
-          array[c][array_ptrs[c]++] = *iter;
+          chars[c][char_counts[c]++] = *iter;
         }
 
-        l.clear();
+        iter = l.begin();
         for(i = 0; i < width; i++) {
-          l.insert(l.end(), array[i], array[i] + array_ptrs[i]);
+          for(j = 0; j < char_counts[i]; j++) {
+            *iter++ = chars[i][j];
+          }
         }
       }
       break;
