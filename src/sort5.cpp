@@ -138,9 +138,7 @@ void sortDataList(list<Data *> &l, int field) {
   switch(field) {
     case 1:
       {
-        list<Data *>::iterator start_iter = l.begin(),
-                               iter = l.begin(),
-                               end_iter = l.end(),
+        list<Data *>::iterator iter,
                                cur_iter;
 
         Data *d = new Data();
@@ -148,34 +146,28 @@ void sortDataList(list<Data *> &l, int field) {
         l.push_front(d);
 
         iter = l.begin();
-
-        //cout << "test 1: " << (*iter)->val1 << endl;
-
         iter++;
 
-        //cout << "test 2: " << (*iter)->val1 << endl;
+        int change,
+            cur_val,
+            max = 0,
+            size = l.size() - 1;
 
-        while(iter != end_iter) {
+        while(size--) {
           cur_iter = iter;
 
-          int cur_val = (*iter)->val1;
-
-          int change = 0;
-          while((*--cur_iter)->val1 > cur_val) {
-            /*string test = (cur_iter == start_iter) ? "true" : "false";
-            cout << "check val " << (*cur_iter)->val1 << " " << test << endl;*/
-            change = 1;
-          }
-
-          if(change) {
-            cur_iter++;
-            l.insert(cur_iter, (*iter));
-            iter = l.erase(iter);
-          } else {
+          cur_val = (*iter)->val1;
+          if(cur_val >= max) {
+            max = cur_val;
             iter++;
+            continue;
           }
 
-          //`cout << "test iter value " << (*iter)->val1 << endl;
+          while((*--cur_iter)->val1 > cur_val);
+
+          l.insert(++cur_iter, (*iter));
+          iter = l.erase(iter);
+
         }
 
         l.pop_front();

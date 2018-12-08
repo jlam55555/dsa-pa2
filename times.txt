@@ -31,4 +31,20 @@ val4: 0.385919
 diff: -0.762721
 total: 2.569817
 
-best: 1.609961
+sort 5 (insertion sort)
+val1: 0.104573
+diff: -0.246337
+total: 3.086201
+
+sort 6 (merge sort)
+val2: 0.83491
+diff: -0.154179
+total: 3.178359
+
+fastest sorts
+val1: sort 5: 0.104573
+val2: sort 6: 0.83491
+val3: sort 3: 0.067162
+val4: sort 4: 0.385919
+best: 1.392564 
+diff: -1.939974
