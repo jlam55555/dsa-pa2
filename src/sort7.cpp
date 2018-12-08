@@ -165,17 +165,17 @@ void rrSort(Data *array[], int start, int end, int radix) {
  */
 Data *val2Bins[2][550000];
 Data *val2s[1001000];
-// for testing
-#include <bitset>
 void rrSort2(int start, int end, int radix) {
 
-  int bin_counts[] = { 0, 0 };
+  int bin_counts[] = { 0, 0 },
+      ind, i, j,
+      size, cur_val, cur_ind, k, end_ind;
   char c;
-  int ind, i, j;
   unsigned int bitmask = 1U << (31 - radix);
+  Data *cur;
 
   for(i = start; i < end; i++) {
-    c = (val2s[i]->val2 & bitmask) != 0;
+    c = (val2s[i]->val2 & bitmask) > 0;
     val2Bins[c][bin_counts[c]++] = val2s[i];
   }
 
@@ -185,44 +185,28 @@ void rrSort2(int start, int end, int radix) {
     }
   }
 
-  /*for(i = 0, ind = start; i < 2; i++) {
-    
-    cout << "BITMASK " << bitset<32>(bitmask) << endl;
-    cout << "BEGIN SORTED BIN RADIX " << radix << endl;
-    for(int k = 0; k < bin_counts[i]; k++) {
-      cout << "VALUE " << bitset<32>(val2s[ind + k]->val2) << " " << val2s[ind + k]->val2 << endl;
-    }
-    cout << "END SORTED BIN" << endl;
-    ind += bin_counts[i];
-  }
-  cout << endl;*/
-
   for(i = 0, ind = start; i < 2; i++) {
     if(radix < 31 && bin_counts[i] > 1) {
-      /*if(bin_counts[i] < 256) {
-        // insertion sort
-        int size = bin_counts[i],
-            max = 0,
-            cur_val,
-            k = ind,
-            end = ind + bin_counts[i];
-        Data *cur;
-        
-        while(k < end) {
-          cur_val = val2s[k]->val2;
-          
-          if(cur_val >= max) {
-            max = cur_val;
-            k++;
-            continue;
-          }
+      if(bin_counts[i] < 20) {
+        size = bin_counts[i];
+        k = ind;
+        end_ind = ind + bin_counts[i];
 
-          while(
+        while(++k < end_ind) {
+          cur = val2s[k];
+          cur_val = cur->val2;
+          cur_ind = k - 1;
+
+          while(cur_ind >= ind && val2s[cur_ind]->val2 > cur_val) {
+            val2s[cur_ind + 1] = val2s[cur_ind];
+            cur_ind--;
+          }
+          val2s[cur_ind + 1] = cur;
         }
 
-      } else {*/
+      } else {
         rrSort2(ind, ind + bin_counts[i], radix + 1);
-      //}
+      }
     }
     ind += bin_counts[i];
   }
